@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>workshop</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 text-center">
+            <p>Welcome to UGA CTF Workshop!</p>
+            <p>
+                In order to participate in the workshop you must either join or create a team.
+            </p>
+        </div>
+    </div>
+
+    <div class="row pt-3">
+        <div class="col-md-4 offset-2  text-center">
+            <a class="btn btn-primary w-100"  href="{{ url_for('workshops.all') }}">View Workshops</a>
+            <!--<a class="btn btn-primary w-100" href="http://127.0.0.1:8000/workshop/joinworkshop/sampleworkshop">Submit</a>-->
+
+        </div>
+        <div class="col-md-4 text-center">
+            <a class="btn btn-primary w-100"  href="{{ url_for('workshops.create') }}">Create Workshop</a>
+            <!--<a class="btn btn-primary w-100" href="http://127.0.0.1:8000/workshop/joinworkshop/sampleworkshop">Submit</a>-->
+
+        </div>
+{#        <div class="col-md-4 text-center">#}
+{#            <a class="btn btn-primary w-100" href="/workshop/joinworkshop/sampleworkshop">Join Workshop</a>#}
+{#        </div>#}
+    </div>
+
+</div>
+{% endblock %}
+
+
+
+
+
+

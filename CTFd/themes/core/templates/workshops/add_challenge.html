@@ -1,0 +1,60 @@
+{% extends 'workshops/challenges.html' %}
+{% block modal %}
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <a href="{{ url_for('workshops.challenges',workshop_id=workshop.id) }}">
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button></a>
+
+                <form onsubmit="sendEmail(event)">
+                    <b><h3 for="fullname">{{ workshop.name }}</h3></b> <br/>
+                    <b><label for="password"> New Challenges</label></b><br/>
+                    <select multiple name="challanges[]" id="challenge-select">
+                        {% for challenge in challenges %}
+                            <option value="{{ challenge.id }}" {{ "selected" if challenge.id in challenge_ids else "" }}>{{ challenge.name }}</option>
+                        {% endfor %}
+                    </select><br/>
+                    <button class="btn btn-success float-right" type="submit" >add</button><br><br>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function (){
+            $('#challenge-window').modal("show")
+        })
+    </script>
+    <script type="text/javascript">
+        function sendEmail(e) {
+            e.preventDefault()
+            var challenges = Array.prototype.slice.call(document.querySelectorAll('#challenge-select option:checked'),0).map(function(v,i,a) {
+                return {challenge_id: v.value,workshop_id: {{workshop.id}} };
+            });
+            fetch('/api/v1/workshops/add', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    {#"Authorization": "Token {access_token}"#}
+                },
+                body: JSON.stringify({
+                    "workshop_id": {{workshop.id}},
+                    "challenges": challenges,
+                })
+            })
+                .then(response => response.json())
+                .then(response => {
+                        location.href = "{{ url_for('workshops.challenges',workshop_id=workshop.id) }}"";
+                    }
+                )
+
+        }
+    </script>
+{% endblock %}

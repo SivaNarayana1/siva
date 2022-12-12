@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ url_for('views.themes', path='css/challenge-board.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Join Workshop {{ workshop.name }}</h1>
+        </div>
+    </div>
+
+    <div class="modal fade" id="challenge-window" tabindex="-1" role="dialog">
+        {% block modal %}{% endblock %}
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% include "components/errors.html" %}
+            </div>
+        </div>
+
+        <div id='challenges-board'>
+            {% if authed() %}
+                {% if is_admin() %}
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <a class="btn btn-primary w-100" href="{{ url_for('workshops.challenges_new',workshop_id=workshop.id) }}">Create New Challenge</a>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <a class="btn btn-primary w-100" href="{{ url_for('workshops.add_challenge',workshop_id=workshop.id) }}">Edit Challenge</a>
+                        </div>
+                        <div class="col-md-4">
+                            <a class="btn btn-primary w-100"  href="{{ url_for('workshops.add_user',workshop_id=workshop.id) }}">Edit Users</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+            <div class="row">&nbsp;</div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                {% for chalenge in workshop.challenges %}
+                    <div class="col-md-3 d-inline-block">
+                        <a href="{{ url_for('challenges.listing') }}#{{ chalenge.challenge.name }}-{{ chalenge.challenge.id }}">
+                            <button class="btn btn-dark challenge-button w-100 text-truncate pt-3 pb-3 mb-2" value="{{ chalenge.challenge.id}}">
+                                <p>{{ chalenge.challenge.name}}</p><span>{{ chalenge.challenge.score}}</span>
+                            </button>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <h2>Submission Deadline: {{ workshop.end_date.strftime('%d-%m-%Y') }}</h2>
+            </div>
+        </div>
+    </div>
+    {% block script %}
+    {% endblock %}
+{% endblock %}
+
+

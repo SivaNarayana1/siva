@@ -1,0 +1,298 @@
+<html><head>
+    <title>CS CTFd</title>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+
+    <script type="text/javascript">
+        (function() {
+            emailjs.init('GT9yqMB1SdfQUkZIY');
+        })();
+    </script>
+    <script type="text/javascript">
+        function sendEmail(e) {
+            console.log(e)
+            e.preventDefault()
+            var invitees = Array.prototype.slice.call(document.querySelectorAll('#email_id option:checked'),0).map(function(v,i,a) {
+                return {user_id: v.value};
+            });
+            var challenges = Array.prototype.slice.call(document.querySelectorAll('#challenge-select option:checked'),0).map(function(v,i,a) {
+                return {challenge_id: v.value};
+            });
+            fetch('/api/v1/workshops', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    {#"Authorization": "Token {access_token}"#}
+                },
+                body: JSON.stringify({
+                    "name": document.getElementById("fullname").value,
+                    "start_date": document.getElementById("starttime").value,
+                    "end_date": document.getElementById("endtime").value,
+                    "creator": document.getElementById("creator").value,
+                    "email": document.getElementById("email").value,
+                    "invitees": invitees,
+                    "challenges": challenges,
+                })
+            })
+                .then(response => response.json())
+                .then(response => {
+                        emails = response.data.emails
+                        console.log(response);
+                        var params = {
+                            from_name: document.getElementById("fullname").value,
+                            message: "Invitation to Join a CS CTFd Workshop",
+                            link: `http://127.0.0.1:8000/workshops/${response.data.id}`,
+                            to_name: emails.join(";")
+                        }
+                        console.log(params)
+                        emailjs.send("service_l43wxnr", "template_l64rwzg", params).then(function (res) {
+                            location.href = `http://127.0.0.1:8000/workshops/${response.data.id}`;
+                        });
+                    }
+                )
+
+        }
+    </script>
+    <script type="text/javascript">
+        function redir() {
+            location.href = `http://127.0.0.1:8000/workshops/`;
+        };
+    </script>
+
+
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/themes/core/static/img/favicon.ico?d=f36ef5bd" type="image/x-icon">
+    <link rel="stylesheet" href="/themes/core/static/css/fonts.min.css?d=f36ef5bd">
+    <link rel="stylesheet" href="/themes/core/static/css/main.min.css?d=f36ef5bd">
+    <link rel="stylesheet" href="/themes/core/static/css/core.min.css?d=f36ef5bd">
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+
+
+
+
+    <script type="text/javascript">
+        var init = {
+            'urlRoot': "",
+            'csrfNonce': "5a7b92361de93378f66abe458dda9941213eb98488bdd85d88f4ff768e39b1a5",
+            'userMode': "teams",
+            'userId': 1,
+            'userName': "Admin",
+            'userEmail': "kota.sivanarayana6475@gmail.com",
+            'teamId': null,
+            'teamName': null,
+            'start': 1669522980,
+            'end': 1672460580,
+            'theme_settings': null
+        }
+    </script><style>undefined</style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="true"><link rel="preconnect" href="https://fonts.gstatic.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&amp;display=swa"></head>
+<body data-new-gr-c-s-check-loaded="14.1087.0" data-gr-ext-installed="">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a href="/" class="navbar-brand">
+
+            CS CTFd
+
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#base-navbars" aria-controls="base-navbars" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="base-navbars">
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link"  href="{{ url_for('workshops.index') }}">Workshops</a>
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/users">Users</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/teams">Teams</a>
+                </li>
+
+
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/scoreboard">Scoreboard</a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/challenges">Challenges</a>
+                </li>
+            </ul>
+
+            <hr class="d-sm-flex d-md-flex d-lg-none">
+
+            <ul class="navbar-nav ml-md-auto d-block d-sm-flex d-md-flex">
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">
+                                <span class="d-block" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Admin Panel">
+                                    <i class="fas fa-wrench d-none d-md-block d-lg-none"></i>
+                                </span>
+                        <span class="d-sm-block d-md-none d-lg-block">
+                                    <i class="fas fa-wrench pr-1"></i>Admin Panel
+                                </span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/notifications">
+                            <span class="d-block" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Notifications">
+                                <i class="fas fa-bell d-none d-md-block d-lg-none"></i>
+                            </span>
+                        <span class="d-sm-block d-md-none d-lg-block">
+                                <i class="fas fa-bell pr-1"></i>
+                                <span class="badge badge-pill badge-danger badge-notification"></span>
+                                Notifications
+                            </span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/team">
+                            <span class="d-block" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Team">
+                                <i class="fas fa-users d-none d-md-block d-lg-none"></i>
+                            </span>
+                        <span class="d-sm-block d-md-none d-lg-block">
+                                <i class="fas fa-users pr-1"></i>Team
+                            </span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/user">
+                            <span class="d-block" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Profile">
+                                <i class="fas fa-user-circle d-none d-md-block d-lg-none"></i>
+                            </span>
+                        <span class="d-sm-block d-md-none d-lg-block">
+                                <i class="fas fa-user-circle pr-1"></i>Profile
+                            </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/settings">
+                            <span class="d-block" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Settings">
+                                <i class="fas fa-cogs d-none d-md-block d-lg-none"></i>
+                            </span>
+                        <span class="d-sm-block d-md-none d-lg-block">
+                                <i class="fas fa-cogs pr-1"></i>Settings
+                            </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">
+                            <span class="d-block" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Logout">
+                                <i class="fas fa-sign-out-alt d-none d-md-block d-lg-none"></i>
+                            </span>
+                        <span class="d-sm-block d-md-none d-lg-block">
+                                <i class="fas fa-sign-out-alt pr-1"></i><span class="d-lg-none">Logout</span>
+                            </span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main role="main">
+
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Create Workshop</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div>
+
+
+                </div>
+                <div>
+                    <form onsubmit="sendEmail(event)">
+                        <b><label for="fullname">Workshop Name</label></b>
+                        <input class="form-control input-filled-valid" type="text" id="fullname" placeholder="name" required/><br/>
+                        <b><label for="password">Challenges to be included</label></b>
+                        <select multiple name="challanges[]" id="challenge-select">
+                            {% for challenge in challenges %}
+                                <option value="{{ challenge.id }}">{{ challenge.name }}</option>
+                            {% endfor %}
+                        </select><br/>
+                        <b><label for="starttime">Start Date</label></b>
+                        <input class="form-control input-filled-valid" id="starttime" name="starttime" required="" type="date" value="">
+                        <b><label for="endtime">End Date</label></b>
+                        <input class="form-control input-filled-valid" id="endtime" name="endtime" required="" type="date" value=""><br/>
+                        {#                    <b><label for="password">Workshop Link</label></b>#}
+                        {#                    <input class="form-control input-filled-valid" id="link" placeholder="link for workshop" required/><br/>#}
+                        <b><label for="password">Workshop Invitation:</label></b><br/><br/>
+                        <b><label for="password">Workshop Creator Name:</label></b>
+                        <input class="form-control input-filled-valid" id="creator" placeholder="Workshop Creator Name:" required/><br/>
+                        <b><label for="password">Workshop Creator Email:</label></b>
+                        <input class="form-control input-filled-valid" id="email" placeholder="Workshop Creator Email:" required/><br/>
+
+                        <b><label for="invitation">Invitee Emails</label></b>
+                        <select multiple name="users[]" id="email_id">
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.name }}</option>
+                            {% endfor %}
+                        </select><br/>
+                        <button class="btn btn-success float-right" type="submit" ">Create</button><br><br>
+                        <button class="btn btn-success float-right" id="myButton" onClick="redir()">Go to Workshops</button><br>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+
+<script defer="" src="/themes/core/static/js/vendor.bundle.min.js?d=f36ef5bd"></script>
+<script defer="" src="/themes/core/static/js/core.min.js?d=f36ef5bd"></script>
+<script defer="" src="/themes/core/static/js/helpers.min.js?d=f36ef5bd"></script>
+
+
+<script defer="" src="/themes/core/static/js/pages/main.min.js?d=f36ef5bd"></script>
+{#{% block entrypoint %}#}
+{#    <script src="https://code.jquery.com/jquery-1.12.3.js" integrity="sha256-1XMpEtA4eKXNNpXcJ1pmMPs8JV+nwLdEqwiJeCQEkyc=" crossorigin="anonymous"></script>#}
+{#    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />#}
+{#    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>#}
+{#    <script defer>#}
+{#        $(document).ready(function() {#}
+{#            $('#challenge-select').select2();#}
+{#        });#}
+{#    </script>#}
+{##}
+{#{% endblock %}#}
+
+
+
+
+
+<!--<div>
+    <input type="text" id="fullname" placeholder="name" required/><br/>
+       <input type="email" id="email_id" placeholder="email id" required/><br/>
+    <textarea id="challenge" placeholder="Message" required/></textarea><br/>
+       <button onClick="sendEmail()">send</button>
+</div>-->
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>

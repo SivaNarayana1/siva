@@ -1,0 +1,80 @@
+{% extends 'workshops/challenges.html' %}
+{% block modal %}
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <a href="{{ url_for('workshops.challenges',workshop_id=workshop.id) }}">
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button></a>
+
+                <form onsubmit="sendEmail(event)">
+                    <b><h3 for="fullname">{{ workshop.name }}</h3></b> <br/>
+                    <b><label for="password"> Users</label></b><br/>
+                    <select multiple name="users[]" id="email_id">
+                        {% for user in users %}
+                            <option value="{{ user.id }}" {{ "selected" if user.id in user_ids else "" }}>{{ user.name }} </option>
+                        {% endfor %}
+                    </select><br/>
+                    <button class="btn btn-success float-right" type="submit" >add</button><br><br>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function (){
+            $('#challenge-window').modal("show")
+        })
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init('GT9yqMB1SdfQUkZIY');
+        })();
+    </script>
+
+    <script type="text/javascript">
+
+        function sendEmail(e) {
+            e.preventDefault()
+            var invitees = Array.prototype.slice.call(document.querySelectorAll('#email_id option:checked'),0).map(function(v,i,a) {
+                return {user_id: v.value,workshop_id: {{workshop.id}} };
+            });
+            fetch('/api/v1/workshops/add_user', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    {#"Authorization": "Token {access_token}"#}
+                },
+                body: JSON.stringify({
+                    "workshop_id": {{workshop.id}},
+                    "invitees": invitees,
+                })
+            })
+                .then(response => response.json())
+                .then(response => {
+                        emails = response.data.emails
+                        console.log(response);
+                        var params = {
+                            from_name: "{{ workshop.creator }}",
+                            message: "Invitation to Join a CS CTFd Workshop",
+                            link: `http://127.0.0.1:8000/workshops/{{workshop.id}}`,
+                            to_name: emails.join(";")
+                        }
+                        console.log(params)
+                        emailjs.send("service_l43wxnr", "template_l64rwzg", params).then(function (res) {
+                            location.href = "{{ url_for('workshops.challenges',workshop_id=workshop.id) }}";
+                        });
+                    }
+                )
+
+
+        }
+    </script>
+{% endblock %}
